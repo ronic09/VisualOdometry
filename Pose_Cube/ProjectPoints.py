@@ -1,5 +1,5 @@
 import numpy as np
-from DistortPoints import distort_points
+from Pose_Cube.DistortPoints import distort_points
 
 
 def project_points(points_3d, cam_intrinsics_k, dist_vector_d=np.zeros([4, 1])):

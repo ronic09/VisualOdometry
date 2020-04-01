@@ -7,10 +7,10 @@ def pose_vector_to_transformation_matrix(pos_vec):
 
     # Converts a 6x1 pose vector into a 4x4 transformation matrix
     omega = np.array(pos_vec[0:3:1])
-    logging.debug('This is the omega of the pose vector: \n %s' % omega)
+    logging.debug('This is the omega of the pose vector: \n %s \n' % omega)
 
     t = np.array(pos_vec[3:6:1])
-    logging.debug('This is the translation of the pose vector: \n %s' % t)
+    logging.debug('This is the translation of the pose vector: \n %s \n' % t)
 
     theta = np.linalg.norm(omega)
     k = omega/theta
