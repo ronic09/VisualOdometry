@@ -47,7 +47,6 @@ def main():
     for image in images:
 
         image_path = os.path.join(dir_path, image)
-        # frame = cv2.imread(image_path)
 
         pil_image = draw_cube(image_path, image_index)
         frame = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)

@@ -32,7 +32,7 @@ def draw_cube(image_path, image_index, corners=False):
     draw = ImageDraw.Draw(img)
 
     # draw corners if required
-    if (corners):
+    if corners:
 
         # 3-D corner positions of checkerboard
         num_corners_x = 9
