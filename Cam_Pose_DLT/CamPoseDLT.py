@@ -1,57 +1,46 @@
 import logging
-import cv2
-import argparse
-import os
-from PIL import Image
 import numpy as np
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d.axes3d as p3
+import matplotlib.animation as animation
+from PIL import Image, ImageDraw
 from Cam_Pose_DLT.EstimatePoseDLT import estimate_pose_dlt
+from Cam_Pose_DLT.ReprojectPoints import reproject_points
 
 
-logging.basicConfig(format='%(asctime)s %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p',
-                    filename='CamPoseDLT.log',
-                    filemode='w',
-                    level=logging.DEBUG)
+def cam_pose_dlt(image, image_index, p_w_corners, reprojection='false'):
 
-
-def main():
     # Load an undistorted image and the detected corners
-    filepath  = 'images/'
-    img_index = 1;
+    img_index = image_index;
+    file_path = 'data/images_undistorted/%s' % image
+
     try:
-        img = Image.open(filename)
+        img = Image.open(file_path)
 
     except IOError:
         pass
 
     k = np.loadtxt("data/K.txt")
-    p_w_corners = np.loadtxt("data/p_w_corners.txt")
 
+    # Load the 2D projected points (detected on the undistorted image)
+    all_pts2d = np.loadtxt('./data/detected_corners.txt');
+    pts2d = all_pts2d[img_index - 1, :].reshape((12, 2))
 
+    # Estimate camera pose with DLT
+    m_dlt = estimate_pose_dlt(pts2d, p_w_corners, k)
+    logging.debug('The estimated camera pose (rotation and translation): \n %s \n' % m_dlt)
 
+    if not reprojection:
+        # Produce a 3d plot containing the corner positions and a visualization of the camera axis
+        reprojected_pts = reproject_points(p_w_corners, m_dlt, k)
+        logging.debug('The reprojected points: \n %s \n' % reprojected_pts)
 
+        draw = ImageDraw.Draw(img)
 
-    K = load('./data/K.txt');
+        for i in range(reprojected_pts.shape[1]):
+            draw.point((reprojected_pts[0, i], reprojected_pts[1, i]), fill=128)
+            draw.point((pts2d[i, 0], pts2d[i, 1]), fill=1000)
 
-    p_W_corners = 0.01 * load('./data/p_W_corners.txt');
-    num_corners = length(p_W_corners);
+        img.show()
 
-    % Load
-    the
-    2
-    D
-    projected
-    points(detected
-    on
-    the
-    undistorted
-    image)
-    all_pts2d = load('./data/detected_corners.txt');
-    pts2d = all_pts2d(img_index,:);
-    pts2d = reshape(pts2d, 2, 12)
-    ';
-    pose_dlt = estimate_pose_dlt(p_w_corners, k)
-
-
-if __name__ == "__main__":
-    main()
+    return m_dlt
