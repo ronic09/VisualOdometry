@@ -61,7 +61,7 @@ def draw_cube(image_path, image_index, corners=False):
         for i in range(num_corners):
             j = i
             draw.point((projected_points[0, i], projected_points[1, j]), fill=128)
-        #img.show()
+        img.show()
 
     # Draw a cube
     offset_x = square_size * 2

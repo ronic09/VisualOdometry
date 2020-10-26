@@ -16,7 +16,7 @@ def main():
 
     # Construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-ext", "--extension", required=False, default='jpg', help="extension name. default is 'png'.")
+    ap.add_argument("-ext", "--extension", required=False, default='jpg', help="extension name. default is 'jpg'.")
     ap.add_argument("-o", "--output", required=False, default='output.mp4', help="output video file")
     args = vars(ap.parse_args())
 
