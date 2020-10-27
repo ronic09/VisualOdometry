@@ -149,9 +149,42 @@ def main():
 
     image_index = 1
 
-    #for image in images:
+    for image in images:
+        image_path = os.path.join(dir_path, image)
+        try:
+            img = Image.open(image_path)
 
+        except IOError:
+            pass
+        img_cv = cv2.imread(image_path, 1)
+        img_col = Image.fromarray(img_cv)
 
+        harris_score = harris(img, corner_patch_size, harris_kappa)
+        keypoints = select_key_points(harris_score, num_keypoints, nonmaximum_supression_radius)
+        descriptors = describe_keypoints(img, keypoints, descriptor_radius)
+
+        if 'db_descriptors' in locals():
+            matches = match_descriptors(db_descriptors, descriptors, match_lambda)
+            draw = ImageDraw.Draw(img_col)
+            for i in range(len(db_keypoints[0])):
+                if matches[i] != -1:
+                    pix_img_1 = (db_keypoints[1, matches[i]], db_keypoints[0, matches[i]])
+                    pix_img_2 = (keypoints[1, i], keypoints[0, i])
+                    draw.line([pix_img_1, pix_img_2], fill=(124, 252, 0), width=4)
+
+        db_descriptors = descriptors
+        db_keypoints = keypoints
+        frame = cv2.cvtColor(np.array(img_col), cv2.COLOR_RGB2BGR)
+        image_index = image_index + 1
+        out.write(frame)  # Write out frame to video
+
+        cv2.imshow('video', frame)
+        if (cv2.waitKey(1) & 0xFF) == ord('q'):  # Hit `q` to exit
+            break
+
+    # Release everything if job is finished
+    out.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
