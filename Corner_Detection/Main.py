@@ -99,11 +99,10 @@ def main():
 
     draw = ImageDraw.Draw(img_col)
     for i in range(len(keypoints[0])):
-        j = i
-        top = (keypoints[1, i], keypoints[0, j] - 3)
-        bottom = (keypoints[1, i], keypoints[0, j] + 3)
-        left = (keypoints[1, i] - 3, keypoints[0, j])
-        right = (keypoints[1, i] + 3, keypoints[0, j])
+        top = (keypoints[1, i], keypoints[0, i] - 3)
+        bottom = (keypoints[1, i], keypoints[0, i] + 3)
+        left = (keypoints[1, i] - 3, keypoints[0, i])
+        right = (keypoints[1, i] + 3, keypoints[0, i])
         draw.line([top, bottom], fill=200, width=2)
         draw.line([left, right], fill=200, width=2)
 
@@ -139,6 +138,30 @@ def main():
     descriptors_2 = describe_keypoints(img_2, keypoints_2, descriptor_radius)
 
     matches = match_descriptors(descriptors, descriptors_2, match_lambda)
+
+    # Ugly work around to convert gray scale image to RGB
+    # 1. Open with CV2 with RGB codec
+    # 2. Convert to PIL image
+    img_cv_2 = cv2.imread('./data/000001.png', 1)
+    img_col_2 = Image.fromarray(img_cv_2)
+
+    draw = ImageDraw.Draw(img_col_2)
+    for i in range(len(keypoints[0])):
+        if matches[i] != -1:
+            pix_img_1 = (keypoints[1, matches[i]], keypoints[0, matches[i]])
+            pix_img_2 = (keypoints_2[1, i], keypoints_2[0, i])
+            draw.line([pix_img_1, pix_img_2], fill=(124, 252, 0), width=2)
+
+    frame = cv2.cvtColor(np.array(img_col_2), cv2.COLOR_RGB2BGR)
+    #image_index = image_index + 1
+    out.write(frame)  # Write out frame to video
+
+    cv2.imshow('image', frame)
+    cv2.waitKey()
+
+    # Part 5: Run corner detection algorithm for all images
+
+
 
 if __name__ == "__main__":
     main()
