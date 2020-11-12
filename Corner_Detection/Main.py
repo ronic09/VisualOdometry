@@ -4,6 +4,7 @@ import argparse
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import cProfile
 from PIL import Image, ImageDraw
 from Corner_Detection.ShiTomasi import shi_tomasi
 from Corner_Detection.Harris import harris
@@ -28,6 +29,7 @@ def main():
     descriptor_radius = 9;
     match_lambda = 4;
 
+    # TODO: Find a way to open image only once. Currently, the same image gets opened several times.
     try:
         img = Image.open('./data/000000.png')
 

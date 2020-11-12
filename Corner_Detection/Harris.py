@@ -3,6 +3,10 @@ import numpy as np
 from scipy import signal
 
 def harris(img, patch_size, kappa):
+    # TODO: convolve2d has a really bad performance (according to cProfile).
+    #  Try to use it as little as possible (e.g. see line 27 to 29)
+    #  or to replace it completely.
+
     # Sobel vectors
     sobel_Ix = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     sobel_Iy = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])

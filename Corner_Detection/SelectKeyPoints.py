@@ -9,7 +9,6 @@ def select_key_points(scores, num, radius):
     temp_scores = np.pad(scores, radius, 'constant')
     for i in range(num):
         kp = np.unravel_index(np.argmax(temp_scores), (temp_scores.shape[0], temp_scores.shape[1]))
-        #kp = np.where(temp_scores == np.amax(temp_scores))
         keypoints[:, i] = kp[:]
         keypoints[:, i] = keypoints[:, i] - radius
         temp_scores[(kp[0] - radius).item(): (kp[0] + radius + 1).item(), (kp[1] - radius).item(): (kp[1] + radius + 1).item()] = 0
