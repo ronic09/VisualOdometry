@@ -11,6 +11,7 @@ from SIFT.ComputeImagePyramid import compute_image_pyramid
 from SIFT.ComputeBlurredImages import compute_blurred_images
 from SIFT.ComputeDoG import compute_DoG
 from SIFT.ExtractKeypoints import extract_keypoints
+from SIFT.ComputeDescriptors import compute_descriptors
 
 logging.basicConfig(format='%(asctime)s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -44,6 +45,8 @@ def main():
     blurred_images = compute_blurred_images(image_pyramid, num_scales, sigma)
     diff_gaussian_images = compute_DoG(blurred_images, num_scales)
     tmp_kpt_locations = extract_keypoints(diff_gaussian_images, num_scales, contrast_threshold)
+    kpt_locations = compute_descriptors(blurred_images, tmp_kpt_locations)
+
     
 
 if __name__ == "__main__":
